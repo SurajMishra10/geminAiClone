@@ -64,7 +64,7 @@ const Main = () => {
 
             <div className="result-data">
               <img src={geminiIcon} alt="" />
-              <p ></p>
+              <p >{resultData}</p>
             </div>
           </div>
         )}
