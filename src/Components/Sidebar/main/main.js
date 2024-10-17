@@ -64,7 +64,15 @@ const Main = () => {
 
             <div className="result-data">
               <img src={geminiIcon} alt="" />
-              <p >{resultData}</p>
+              {
+                loading?<div className="loader">
+                  <hr />
+                  <hr />
+                  <hr />
+                </div>
+                : <p >{resultData}</p>
+              }
+             
             </div>
           </div>
         )}
@@ -80,7 +88,7 @@ const Main = () => {
             <div>
               <i className="fa-regular fa-image"></i>
               <i className="fa-solid fa-microphone"></i>
-              <i onClick={() => onSent()} class="fa-regular fa-paper-plane"></i>
+             {input? <i onClick={() => onSent()} className="fa-regular fa-paper-plane"></i>:null} 
             </div>
           </div>
           <p className="bottom-info">

@@ -1,25 +1,37 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./sidebar.css";
+import { Context } from "../../context/context";
 
 const Sidebar = () => {
   const [extended, setExtended] = useState(false);
+  const {onSent, prevPrompts, setRecentPrompt, newChat} = useContext(Context)
+const loadPrompt =async (prompt)=>{
+  setRecentPrompt(prompt)
+  await onSent(prompt)
+}
+
   return (
     <div className="sidebar">
       <div className="top">
         <i onClick={ ()=>setExtended(prev=>!prev)} className="fa-solid fa-bars menu"></i>
 
-        <div className="new-chat">
+        <div onClick={()=>newChat()} className="new-chat">
           <i className="fa-solid fa-plus"></i>
           {extended ? <p>New Chat</p> : null}
         </div>
         {extended ? 
           <div className="recent">
             <p className="recent-title">Recent</p>
+            {prevPrompts.map((item, index)=>{
+              return(
+                <div onClick={()=>loadPrompt(item)} className="recent-entry" key={index}>
+                <i className="fa-regular fa-message"></i>
+                <p>{item.slice(0,18)} ...</p>
+              </div>
+              )
+            })}
 
-            <div className="recent-entry">
-              <i className="fa-regular fa-message"></i>
-              <p>What is react...</p>
-            </div>
+            
           </div>
          : null}
       </div>

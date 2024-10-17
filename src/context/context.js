@@ -11,13 +11,55 @@ const ContextProvider = (props) => {
   const [loading, setLoading] = useState(false); // Renamed to setLoading
   const [resultData, setResultData] = useState("");
 
+  const deleyPara = (index, nextWord) => {
+    setTimeout(function () {
+      setResultData((prev) => prev + nextWord);
+    }, 75 * index);
+  };
+
+  const newChat = ()=>{
+    setLoading(false)
+    setShowResult(false)
+
+  }
+
   const onSent = async (prompt) => {
     try {
       setResultData("");
       setLoading(true);
       setShowResult(true);
-      const response = await run(input);
-      setResultData(response);
+      let response;
+      if (prompt !== undefined) {
+        response = await run(prompt);
+        setRecentPrompt(prompt);
+      } else {
+        setPrevPrompts((prev) => [...prev, input]);
+        setRecentPrompt(input);
+        response = await run(input);
+      }
+
+      let responseArray = response.split("**"); // Split by '**' for bold text
+      let newResponse = ""; // Initialize newResponse as an empty string
+
+      for (let i = 0; i < responseArray.length; i++) {
+        if (i % 2 === 1) {
+          // If the index is odd, wrap the text in <b></b> tags for bold
+          newResponse += "<b>" + responseArray[i] + "</b>";
+        } else {
+          // If the index is even, just append the text
+          newResponse += responseArray[i];
+        }
+      }
+
+      // Replace single '*' with a new line
+      let newResponse2 = newResponse.replace(/\*(?=[^\*])/g, "<br />"); // Use <br /> for new lines
+      let newResponseArray = newResponse2.split(" ");
+
+      for (let i = 0; i < newResponseArray.length; i++) {
+        const nextWord = newResponseArray[i];
+        deleyPara(i, nextWord + " ");
+      }
+
       setLoading(false);
       setInput("");
     } catch (error) {
@@ -38,6 +80,7 @@ const ContextProvider = (props) => {
     resultData,
     input,
     setInput,
+    newChat
   };
 
   return (
